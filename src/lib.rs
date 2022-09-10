@@ -3,7 +3,7 @@ use std::{
 };
 use std::fmt;
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Vec2<T>(T, T);
 
 impl<T> fmt::Display for Vec2<T> where T: fmt::Display {
@@ -41,6 +41,13 @@ mod tests {
     fn formatting() {
         let v = Vec2(0, 3);
         assert_eq!(format!("{v:?}"), "Vec2(0, 3)");
+    }
+
+    #[test]
+    fn copying() {
+        let original = Vec2(1, 3);
+        let copy = original;
+        assert_eq!(original, Vec2(1, 3));
     }
 
     #[test]
