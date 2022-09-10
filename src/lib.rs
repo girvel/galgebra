@@ -1,10 +1,16 @@
 use std::{
     ops::Add,
-    cmp::Eq,
 };
+use std::fmt;
 
 #[derive(Debug)]
 pub struct Vec2<T>(T, T);
+
+impl<T> fmt::Display for Vec2<T> where T: fmt::Display {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{{{}; {}}}", self.0, self.1)
+    }
+}
 
 impl<T> PartialEq for Vec2<T> where T: Eq {
     fn eq(&self, other: &Self) -> bool {
@@ -32,15 +38,21 @@ mod tests {
     use super::*;
 
     #[test]
-    fn equality() {
-        assert_eq!(Vec2(1, 2), Vec2(1, 2));
-        assert_ne!(Vec2(1, 2), Vec2(2, 1));
-    }
-
-    #[test]
     fn formatting() {
         let v = Vec2(0, 3);
         assert_eq!(format!("{v:?}"), "Vec2(0, 3)");
+    }
+
+    #[test]
+    fn displaying() {
+        let v = Vec2(2, 1);
+        assert_eq!(format!("{v}"), "{2; 1}");
+    }
+
+    #[test]
+    fn equality() {
+        assert_eq!(Vec2(1, 2), Vec2(1, 2));
+        assert_ne!(Vec2(1, 2), Vec2(2, 1));
     }
 
     #[test]
