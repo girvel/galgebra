@@ -1,7 +1,8 @@
+use std::cmp::Ordering;
 use std::ops::Add;
 use std::fmt;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Vec2<T>(pub T, pub T);
 
 impl<T> fmt::Display for Vec2<T> where T: fmt::Display {
@@ -10,20 +11,45 @@ impl<T> fmt::Display for Vec2<T> where T: fmt::Display {
     }
 }
 
-impl<T> PartialEq for Vec2<T> where T: Eq {
-    fn eq(&self, other: &Self) -> bool {
-        self.0 == other.0 && self.1 == other.1
+impl<T> PartialOrd for Vec2<T> where Vec2<T>: Eq, T: PartialOrd {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        if self == other {
+            Some(Ordering::Equal)
+        }
+        else if self > other {
+            Some(Ordering::Greater)
+        }
+        else if self < other {
+            Some(Ordering::Less)
+        }
+        else {
+            None
+        }
+    }
+
+    fn lt(&self, other: &Self) -> bool {
+        self.0 < other.0 && self.1 < other.1
+    }
+
+    fn le(&self, other: &Self) -> bool {
+        self.0 <= other.0 && self.1 <= other.1
+    }
+
+    fn gt(&self, other: &Self) -> bool {
+        self.0 > other.0 && self.1 > other.1
+    }
+
+    fn ge(&self, other: &Self) -> bool {
+        self.0 >= other.0 && self.1 >= other.1
     }
 }
 
-impl<T> Eq for Vec2<T> where T: Eq {}
+impl<Lhs, Rhs, Result> Add<Vec2<Rhs>>
+for Vec2<Lhs>
+    where Lhs: Add<Rhs, Output=Result> {
+    type Output = Vec2<Result>;
 
-impl<LHS, RHS, RESULT> Add<Vec2<RHS>>
-for Vec2<LHS>
-    where LHS: Add<RHS, Output=RESULT> {
-    type Output = Vec2<RESULT>;
-
-    fn add(self, rhs: Vec2<RHS>) -> Self::Output {
+    fn add(self, rhs: Vec2<Rhs>) -> Self::Output {
         Vec2(
             self.0 + rhs.0,
             self.1 + rhs.1,
@@ -58,6 +84,12 @@ mod tests {
     fn equality() {
         assert_eq!(Vec2(1, 2), Vec2(1, 2));
         assert_ne!(Vec2(1, 2), Vec2(2, 1));
+    }
+
+    #[test]
+    fn ordering() {
+        assert!(Vec2(2, 2) > Vec2(1, 1));
+        assert!(Vec2(2, 1) >= Vec2(1, 1));
     }
 
     #[test]
