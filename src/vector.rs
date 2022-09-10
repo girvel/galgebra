@@ -2,7 +2,7 @@ use std::ops::Add;
 use std::fmt;
 
 #[derive(Debug, Copy, Clone)]
-pub struct Vec2<T>(T, T);
+pub struct Vec2<T>(pub T, pub T);
 
 impl<T> fmt::Display for Vec2<T> where T: fmt::Display {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
