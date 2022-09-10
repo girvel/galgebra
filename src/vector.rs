@@ -44,7 +44,7 @@ mod tests {
     #[test]
     fn copying() {
         let original = Vec2(1, 3);
-        let copy = original;
+        let _copy = original;
         assert_eq!(original, Vec2(1, 3));
     }
 
