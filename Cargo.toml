@@ -1,9 +1,10 @@
 [package]
 name = "galgebra"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 description = "A library with geometric algebra stuff (vectors)"
 license = "MIT"
+repository = "https://github.com/girvel/galgebra"
 
 [dependencies]
 
