@@ -22,7 +22,7 @@ impl<Item> Matrix<Item> {
         }
     }
 
-    pub fn size(self) -> usize2 {
+    pub fn size(&self) -> usize2 {
         self.size
     }
 
