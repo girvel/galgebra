@@ -1,6 +1,6 @@
 [package]
 name = "galgebra"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 description = "A library with geometric algebra stuff (vectors)"
 license = "MIT"
