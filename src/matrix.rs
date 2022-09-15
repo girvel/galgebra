@@ -41,12 +41,23 @@ impl<Item> Matrix<Item> {
         self.size
     }
 
+    fn to_scalar_index(&self, index: usize2) -> usize {
+        index.1 * self.size.0 + index.0
+    }
+
+    fn check_index(&self, index: usize2) {
+        if !(index < self.size) {
+            panic!("Index should be below size of the matrix")
+        }
+    }
+
     pub fn get_unchecked(&self, index: usize2) -> &Item {
-        &self.internal_vector[index.1 * self.size.0 + index.0]
+        &self.internal_vector[self.to_scalar_index(index)]
     }
 
     pub fn get_unchecked_mut(&mut self, index: usize2) -> &mut Item {
-        &mut self.internal_vector[index.1 * self.size.0 + index.0]
+        let index = self.to_scalar_index(index);
+        &mut self.internal_vector[index]
     }
 
     pub fn get(&self, index: usize2) -> Option<&Item> {
@@ -64,26 +75,30 @@ impl<Item> Matrix<Item> {
             None
         }
     }
+
+    pub fn swap(&mut self, first_index: usize2, second_index: usize2) {
+        self.check_index(first_index);
+        self.check_index(second_index);
+
+        let first_index = self.to_scalar_index(first_index);
+        let second_index = self.to_scalar_index(second_index);
+
+        self.internal_vector.swap(first_index, second_index)
+    }
 }
 
 impl<Item> Index<usize2> for Matrix<Item> {
     type Output = Item;
 
     fn index(&self, index: usize2) -> &Self::Output {
-        if !(index < self.size) {
-            panic!("Index should be below size of the matrix")
-        }
-
+        self.check_index(index);
         self.get_unchecked(index)
     }
 }
 
 impl<Item> IndexMut<usize2> for Matrix<Item> {
     fn index_mut(&mut self, index: usize2) -> &mut Self::Output {
-        if !(index < self.size) {
-            panic!("Index should be below size of the matrix")
-        }
-
+        self.check_index(index);
         self.get_unchecked_mut(index)
     }
 }
@@ -147,6 +162,12 @@ mod tests {
             }
             None => assert!(false)
         }
+    }
+
+    #[rstest]
+    fn swapping(mut small_matrix: Matrix<i32>) {
+        small_matrix.swap(Vec2(0, 0), Vec2(1, 1));
+        assert_eq!(small_matrix.internal_vector, vec![3, 1, 2, 0]);
     }
 
     #[rstest]
