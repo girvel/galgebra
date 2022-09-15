@@ -3,10 +3,25 @@ use super::vector::Vec2;
 #[allow(non_camel_case_types)]
 type usize2 = Vec2<usize>;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Matrix<Item> {
     internal_vector: Vec<Item>,
     size: usize2,
+}
+
+impl<Item> Matrix<Item> where Item: Clone {
+    pub fn filled(filler: &Item, size: usize2) -> Matrix<Item> {
+        let length = size.0 * size.1;
+        let mut internal_vector = Vec::<Item>::with_capacity(length);
+        for _ in 0..length {
+            internal_vector.push(filler.clone());
+        }
+
+        Self {
+            internal_vector,
+            size
+        }
+    }
 }
 
 impl<Item> Matrix<Item> {
@@ -80,7 +95,21 @@ mod tests {
     use super::*;
 
     #[rstest]
-    fn creating() {
+    fn creating_filled() {
+        let matrix = Matrix::filled(&0, Vec2(4, 3));
+
+        assert_eq!(matrix, Matrix {
+            internal_vector: vec![
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+            ],
+            size: Vec2(4, 3),
+        })
+    }
+
+    #[rstest]
+    fn creating_new() {
         let matrix = Matrix::new([
             [1,  4,  9],
             [16, 25, 36],
